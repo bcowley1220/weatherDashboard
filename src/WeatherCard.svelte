@@ -1,10 +1,13 @@
 <script>
+
   let promise = harborSpringsWeather();
   let response;
   let json = {};
   let daysOfWeek = [];
   let error;
   let eachDay;
+  let userLocation = `Detroit,MI`;
+  let userLocationCoord = null;
   let day = {
     date: '',
     icon: '',
@@ -20,7 +23,8 @@
     sunriseTime: '',
     sunsetTime: ''
   }
-  let harborSpringsCall = 'https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/6391cb4b579b96ba00ae2f374f79d60b/42.5751,-83.4882';
+  let harborSpringsCall = `https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/6391cb4b579b96ba00ae2f374f79d60b/42.660668,-84.076764`;
+  let mapApiCall = `http://open.mapquestapi.com/geocoding/v1/address?key=QZSnSKeOgvAMPbWsHYlh7qVAnEeMGJBB&location=detroit,mi`
   let months = [
     'January',
     'February',
@@ -62,7 +66,6 @@
         highMin += '0';
       } else if(highMin.toString().length == 1){
         highMin = '0' + highMin;
-        // console.log(highMin.toString)
       }
       
       day.temperatureLowTime = `${lowHrs}:${lowMin} ${lowAmPm}`;
@@ -90,11 +93,17 @@
           break;
       }
     }
+    let getUserLocationCoord = async userLocation => {
+
+    }
 
 
 
 
   async function harborSpringsWeather() {
+    if(userLocation){
+      console.log(userLocation)
+    }
     response = await fetch(harborSpringsCall);
     json = await response.json();
     if(response.ok){
@@ -143,15 +152,24 @@
   grid-gap: .25em;
 }
 .weatherCard {
-    padding: 1em;
     border: solid 1px lightgray;
     border-radius: 5px;
 }
 .dateTitle {
     text-align: center;
     font-size: 1.25em;
+    padding: .25em;
+    border-bottom: solid 1px lightgray;
+}
+.cardMainInfo {
+    padding: 1em;
+}
+strong {
+    font-weight: 600;
 }
 </style>
+
+<input type="text" name="userLocation" bind:value={userLocation} />
 <button type="button" on:click={getData}>Get Weather</button>
 
 {#await promise}
@@ -161,12 +179,14 @@
     {#each daysOfWeek as day}
       <li class="weatherCard">
         <p class="dateTitle">{day.date}</p>
-        <img src={day.icon} alt="">
-        <p>Daily Summary: {day.summary}</p>
-        <p>Temp High: {day.temperatureHigh}</p>
-        <p>Temp High Time: {day.temperatureHighTime}</p>
-        <p>Temp Low: {day.temperatureLow}</p>
-        <p>Temp Low Time: {day.temperatureLowTime}</p>
+        <div class="cardMainInfo">
+          <img src={day.icon} alt="" />
+          <p><strong>Daily Summary:</strong> {day.summary}</p>
+          <p><strong>Temp High:</strong> {day.temperatureHigh}</p>
+          <p><strong>Temp High Time:</strong> {day.temperatureHighTime}</p>
+          <p><strong>Temp Low: </strong> {day.temperatureLow}</p>
+          <p><strong>Temp Low Time: </strong> {day.temperatureLowTime}</p>
+        </div>
       </li>
     {/each}
   </ul>
