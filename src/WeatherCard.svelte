@@ -39,23 +39,35 @@
     let getHours = (day) => {
       let temperatureLowTime = new Date(day.temperatureLowTime * 1000);
       let temperatureHighTime = new Date(day.temperatureHighTime * 1000);
+      console.log(temperatureHighTime);
       let lowHrs = temperatureLowTime.getHours();
       let lowMin = temperatureLowTime.getMinutes();
-      if(lowMin == '0'){
-        lowMin = lowMin + '0';
-      }
-      let highHrs = temperatureHighTime.getHours();
-      let highAmPm = highHrs >= 12 ? 'pm' : 'am';
-      highHrs = highHrs - 12;
-      let highMin = temperatureHighTime.getMinutes();
-      if(highMin == '0'){
-        highMin = lowMin + '0';
+      if(lowMin == 0){
+        lowMin += '0';
       }
       let lowAmPm = lowHrs >= 12 ? 'pm' : 'am';
+      if(lowHrs > 12){
+        lowHrs -= 12;
+      }
+      let highHrs = temperatureHighTime.getHours();
+
+      let highAmPm = highHrs >= 12 ? 'pm' : 'am';
+      if(highHrs > 12){
+        highHrs -= 12;
+      }
+      
+      let highMin = temperatureHighTime.getMinutes();
+      console.log(highMin);
+      if(highMin == 0){
+        highMin += '0';
+      } else if(highMin.toString().length == 1){
+        highMin = '0' + highMin;
+        // console.log(highMin.toString)
+      }
+      
       day.temperatureLowTime = `${lowHrs}:${lowMin} ${lowAmPm}`;
-      console.log(day.temperatureLowTime);
       day.temperatureHighTime = `${highHrs}:${highMin} ${highAmPm}`;
-      console.log(day.temperatureHighTime);
+
       return day;
     };
 
@@ -121,26 +133,40 @@
     promise = harborSpringsWeather();
 }
 
-
-
 </script>
 
+<style>
+.cardContainer {
+  display: grid;
+  grid-template-columns: repeat( auto-fill, minmax(min(calc(180px + 12vmin), 100%), 1fr));
+  list-style: none;
+  grid-gap: .25em;
+}
+.weatherCard {
+    padding: 1em;
+    border: solid 1px lightgray;
+    border-radius: 5px;
+}
+.dateTitle {
+    text-align: center;
+    font-size: 1.25em;
+}
+</style>
 <button type="button" on:click={getData}>Get Weather</button>
 
 {#await promise}
   <p>...going</p>
 {:then text}
-  <ul>
+  <ul class="cardContainer">
     {#each daysOfWeek as day}
-      <li>
-        <p>Date: {day.date}</p>
+      <li class="weatherCard">
+        <p class="dateTitle">{day.date}</p>
         <img src={day.icon} alt="">
         <p>Daily Summary: {day.summary}</p>
         <p>Temp High: {day.temperatureHigh}</p>
         <p>Temp High Time: {day.temperatureHighTime}</p>
         <p>Temp Low: {day.temperatureLow}</p>
         <p>Temp Low Time: {day.temperatureLowTime}</p>
-
       </li>
     {/each}
   </ul>
