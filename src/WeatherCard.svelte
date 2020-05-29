@@ -6,7 +6,7 @@
   let daysOfWeek = [];
   let error;
   let eachDay;
-  let userLocation = `Detroit,MI`;
+  let userLocation = `Commerce Twp, MI`;
   let userLocationCoord = null;
   let day = {
     date: '',
@@ -23,8 +23,8 @@
     sunriseTime: '',
     sunsetTime: ''
   }
-  let harborSpringsCall = `https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/6391cb4b579b96ba00ae2f374f79d60b/42.660668,-84.076764`;
-  let mapApiCall = `http://open.mapquestapi.com/geocoding/v1/address?key=QZSnSKeOgvAMPbWsHYlh7qVAnEeMGJBB&location=detroit,mi`
+  let harborSpringsCall = `https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/6391cb4b579b96ba00ae2f374f79d60b/${userLocationCoord}`;
+  let mapApiCall = `http://open.mapquestapi.com/geocoding/v1/address?key=QZSnSKeOgvAMPbWsHYlh7qVAnEeMGJBB&location=${userLocation}`
   let months = [
     'January',
     'February',
@@ -43,7 +43,6 @@
     let getHours = (day) => {
       let temperatureLowTime = new Date(day.temperatureLowTime * 1000);
       let temperatureHighTime = new Date(day.temperatureHighTime * 1000);
-      console.log(temperatureHighTime);
       let lowHrs = temperatureLowTime.getHours();
       let lowMin = temperatureLowTime.getMinutes();
       if(lowMin == 0){
@@ -61,7 +60,6 @@
       }
       
       let highMin = temperatureHighTime.getMinutes();
-      console.log(highMin);
       if(highMin == 0){
         highMin += '0';
       } else if(highMin.toString().length == 1){
@@ -93,17 +91,32 @@
           break;
       }
     }
-    let getUserLocationCoord = async userLocation => {
-
+    let getUserLocationCoord = async (userLocation, userLocationCoord) => {
+      let locationReponse = await fetch(mapApiCall);
+      let locationJSON = await locationReponse.json();
+      if(locationReponse.ok){
+       return userLocationCoord = `${locationJSON.results[0].locations[0].latLng.lat}, ${locationJSON.results[0].locations[0].latLng.lng}`;
+        // console.log(userLocationCoord)
+        // return userLocationCoord;
+      }else {
+        throw new Error(locationJSON);
+      }
     }
 
 
 
 
   async function harborSpringsWeather() {
-    if(userLocation){
-      console.log(userLocation)
-    }
+    daysOfWeek = [];
+    console.log(userLocation)
+    mapApiCall = `http://open.mapquestapi.com/geocoding/v1/address?key=QZSnSKeOgvAMPbWsHYlh7qVAnEeMGJBB&location=${userLocation}`
+    let locationReponse = await fetch(mapApiCall);
+    let locationJSON = await locationReponse.json();
+    if(locationReponse.ok){
+    userLocationCoord = `${locationJSON.results[0].locations[0].latLng.lat}, ${locationJSON.results[0].locations[0].latLng.lng}`;
+    harborSpringsCall = `https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/6391cb4b579b96ba00ae2f374f79d60b/${userLocationCoord}`
+    console.log(userLocationCoord);
+    console.log(harborSpringsCall)
     response = await fetch(harborSpringsCall);
     json = await response.json();
     if(response.ok){
@@ -136,44 +149,54 @@
     } else {
       throw new Error(json);
     }
-  }
+    }else {
+      throw new Error(locationJSON);
+    }
 
-  let getData = () => {
+
+  };
+
+  let userLocationFormHandler = () => {
+    // getUserLocationCoord(userLocation, userLocationCoord);
     promise = harborSpringsWeather();
 }
+
+
+
 
 </script>
 
 <style>
-.cardContainer {
-  display: grid;
-  grid-template-columns: repeat( auto-fill, minmax(min(calc(180px + 12vmin), 100%), 1fr));
-  list-style: none;
-  grid-gap: .25em;
-}
-.weatherCard {
-    border: solid 1px lightgray;
-    border-radius: 5px;
-}
-.dateTitle {
-    text-align: center;
-    font-size: 1.25em;
-    padding: .25em;
-    border-bottom: solid 1px lightgray;
-}
-.cardMainInfo {
-    padding: 1em;
-}
-strong {
-    font-weight: 600;
-}
+  .cardContainer {
+    display: grid;
+    grid-template-columns: repeat( auto-fill, minmax(min(calc(180px + 12vmin), 100%), 1fr));
+    list-style: none;
+    grid-gap: .25em;
+  }
+  .weatherCard {
+      border: solid 1px lightgray;
+      border-radius: 5px;
+  }
+  .dateTitle {
+      text-align: center;
+      font-size: 1.25em;
+      padding: .25em;
+      border-bottom: solid 1px lightgray;
+  }
+  .cardMainInfo {
+      padding: 1em;
+  }
+  strong {
+      font-weight: 600;
+  }
 </style>
-
-<input type="text" name="userLocation" bind:value={userLocation} />
-<button type="button" on:click={getData}>Get Weather</button>
+<form class="userLocationForm" on:submit|preventDefault={userLocationFormHandler}>
+  <input type="text" name="userLocation" bind:value={userLocation} />
+  <button type="submit">Get {userLocation} Weather</button>
+</form>
 
 {#await promise}
-  <p>...going</p>
+  <p>Fetching your weather report!</p>
 {:then text}
   <ul class="cardContainer">
     {#each daysOfWeek as day}
@@ -191,5 +214,5 @@ strong {
     {/each}
   </ul>
 {:catch error}
-<p>Waiting To Start...</p>
+<p>Ready For Your Search!</p>
 {/await}
