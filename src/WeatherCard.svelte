@@ -1,5 +1,4 @@
 <script>
-
   let promise = harborSpringsWeather();
   let response;
   let json = {};
@@ -9,188 +8,209 @@
   let userLocation = `Commerce Twp, MI`;
   let userLocationCoord = null;
   let day = {
-    date: '',
-    icon: '',
-    summary: '',
-    temperatureHighTime: '',
-    temperatureHigh: '',
-    temperatureLowTime: '',
-    temperatureLow: '',
-    precipProbability: '',
-    precipType: '',
-    precipAccumulation: '',
-    precipIntensityMaxTime: '',
-    sunriseTime: '',
-    sunsetTime: ''
-  }
+    date: "",
+    icon: "",
+    summary: "",
+    temperatureHighTime: "",
+    temperatureHigh: "",
+    temperatureLowTime: "",
+    temperatureLow: "",
+    precipProbability: "",
+    precipType: "",
+    precipAccumulation: "",
+    precipIntensityMaxTime: "",
+    sunriseTime: "",
+    sunsetTime: ""
+  };
   let harborSpringsCall = `https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/6391cb4b579b96ba00ae2f374f79d60b/${userLocationCoord}`;
-  let mapApiCall = `http://open.mapquestapi.com/geocoding/v1/address?key=QZSnSKeOgvAMPbWsHYlh7qVAnEeMGJBB&location=${userLocation}`
+  let mapApiCall = `http://open.mapquestapi.com/geocoding/v1/address?key=QZSnSKeOgvAMPbWsHYlh7qVAnEeMGJBB&location=${userLocation}`;
   let months = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December'
-  ]
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
+  ];
 
-    let getHours = (day) => {
-      let temperatureLowTime = new Date(day.temperatureLowTime * 1000);
-      let temperatureHighTime = new Date(day.temperatureHighTime * 1000);
-      let lowHrs = temperatureLowTime.getHours();
-      let lowMin = temperatureLowTime.getMinutes();
-      if(lowMin == 0){
-        lowMin += '0';
-      }
-      let lowAmPm = lowHrs >= 12 ? 'pm' : 'am';
-      if(lowHrs > 12){
-        lowHrs -= 12;
-      }
-      let highHrs = temperatureHighTime.getHours();
-
-      let highAmPm = highHrs >= 12 ? 'pm' : 'am';
-      if(highHrs > 12){
-        highHrs -= 12;
-      }
-      
-      let highMin = temperatureHighTime.getMinutes();
-      if(highMin == 0){
-        highMin += '0';
-      } else if(highMin.toString().length == 1){
-        highMin = '0' + highMin;
-      }
-      
-      day.temperatureLowTime = `${lowHrs}:${lowMin} ${lowAmPm}`;
-      day.temperatureHighTime = `${highHrs}:${highMin} ${highAmPm}`;
-
-      return day;
-    };
-
-    let weatherIcon = () => {
-      switch (day.icon) {
-        case 'sunny':
-          day.icon = `assets/sun.svg`;
-          break;
-        case 'clear-day':
-          day.icon = `assets/sun.svg`;
-          break;
-        case 'rain':
-          day.icon = `assets/rain.svg`;
-          break;
-        case 'partly-cloudy-day':
-          day.icon = `assets/cloudy.svg`;
-          break;
-        case 'cloudy':
-          day.icon = `assets/cloudy.svg`;
-          break;
-      }
+  let getHours = day => {
+    let temperatureLowTime = new Date(day.temperatureLowTime * 1000);
+    let temperatureHighTime = new Date(day.temperatureHighTime * 1000);
+    let sunriseTime = new Date(day.sunriseTime * 1000);
+    let sunsetTime = new Date(day.sunsetTime * 1000);
+    let lowHrs = temperatureLowTime.getHours();
+    let lowMin = temperatureLowTime.getMinutes();
+    if (lowMin == 0) {
+      lowMin += "0";
     }
-    let getUserLocationCoord = async (userLocation, userLocationCoord) => {
-      let locationReponse = await fetch(mapApiCall);
-      let locationJSON = await locationReponse.json();
-      if(locationReponse.ok){
-       return userLocationCoord = `${locationJSON.results[0].locations[0].latLng.lat}, ${locationJSON.results[0].locations[0].latLng.lng}`;
-        // console.log(userLocationCoord)
-        // return userLocationCoord;
-      }else {
-        throw new Error(locationJSON);
-      }
+    let lowAmPm = lowHrs >= 12 ? "pm" : "am";
+    if (lowHrs > 12) {
+      lowHrs -= 12;
+    }
+    let highHrs = temperatureHighTime.getHours();
+
+    let highAmPm = highHrs >= 12 ? "pm" : "am";
+    if (highHrs > 12) {
+      highHrs -= 12;
     }
 
+    let highMin = temperatureHighTime.getMinutes();
+    if (highMin == 0) {
+      highMin += "0";
+    } else if (highMin.toString().length == 1) {
+      highMin = "0" + highMin;
+    }
 
+    let sunriseHr = sunriseTime.getHours();
+    if (sunriseHr > 12) {
+      sunriseHr -= 12;
+    }
+    let sunriseMin = sunriseTime.getMinutes();
+    if (sunriseMin == 0) {
+      sunriseMin += "0";
+    } else if (sunriseMin.toString().length == 1) {
+      sunriseMin = "0" + sunriseMin;
+    }
 
+    let sunsetHr = sunsetTime.getHours();
+    if (sunsetHr > 12) {
+      sunsetHr -= 12;
+    }
+    let sunsetMin = sunsetTime.getMinutes();
+    if (sunsetMin == 0) {
+      sunsetMin += "0";
+    } else if (sunsetMin.toString().length == 1) {
+      sunsetMin = "0" + sunsetMin;
+    }
+
+    day.temperatureLowTime = `${lowHrs}:${lowMin} ${lowAmPm}`;
+    day.temperatureHighTime = `${highHrs}:${highMin} ${highAmPm}`;
+    day.sunriseTime = `${sunriseHr}:${sunriseMin} am`;
+    day.sunsetTime = `${sunsetHr}:${sunsetMin} pm`;
+    return day;
+  };
+
+  let weatherIcon = () => {
+    switch (day.icon) {
+      case "sunny":
+        day.icon = `assets/sun.svg`;
+        break;
+      case "clear-day":
+        day.icon = `assets/sun.svg`;
+        break;
+      case "rain":
+        day.icon = `assets/rain.svg`;
+        break;
+      case "partly-cloudy-day":
+        day.icon = `assets/cloudy.svg`;
+        break;
+      case "cloudy":
+        day.icon = `assets/cloudy.svg`;
+        break;
+    }
+  };
+  let getUserLocationCoord = async (userLocation, userLocationCoord) => {
+    let locationReponse = await fetch(mapApiCall);
+    let locationJSON = await locationReponse.json();
+    if (locationReponse.ok) {
+      return (userLocationCoord = `${locationJSON.results[0].locations[0].latLng.lat}, ${locationJSON.results[0].locations[0].latLng.lng}`);
+    } else {
+      throw new Error(locationJSON);
+    }
+  };
 
   async function harborSpringsWeather() {
     daysOfWeek = [];
-    console.log(userLocation)
-    mapApiCall = `http://open.mapquestapi.com/geocoding/v1/address?key=QZSnSKeOgvAMPbWsHYlh7qVAnEeMGJBB&location=${userLocation}`
+    console.log(userLocation);
+    mapApiCall = `http://open.mapquestapi.com/geocoding/v1/address?key=QZSnSKeOgvAMPbWsHYlh7qVAnEeMGJBB&location=${userLocation}`;
     let locationReponse = await fetch(mapApiCall);
     let locationJSON = await locationReponse.json();
-    if(locationReponse.ok){
-    userLocationCoord = `${locationJSON.results[0].locations[0].latLng.lat}, ${locationJSON.results[0].locations[0].latLng.lng}`;
-    harborSpringsCall = `https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/6391cb4b579b96ba00ae2f374f79d60b/${userLocationCoord}`
-    console.log(userLocationCoord);
-    console.log(harborSpringsCall)
-    response = await fetch(harborSpringsCall);
-    json = await response.json();
-    if(response.ok){
-      console.log(json.daily.data )
-      json.daily.data.forEach(info => {
-        day = {
-          date: info.time, 
-          icon: info.icon,
-          summary: info.summary,
-          temperatureHighTime: info.temperatureHighTime,
-          temperatureHigh: `${info.temperatureHigh}F`,
-          temperatureLowTime: info.temperatureLowTime,
-          temperatureLow: `${info.temperatureLow}F`,
-          precipProbability: info.precipProbability,
-          precipType: info.precipType,
-          precipAccumulation: info.precipAccumulation,
-          precipIntensityMaxTime: info.precipIntensityMaxTime,
-          sunriseTime: info.sunriseTime,
-          sunsetTime: info.sunsetTime
-        }
-        let date = new Date(day.date * 1000);
-        let month = date.getMonth();
-        day.date = `${months[month]}, ${date.getDate()}, ${date.getFullYear()}`;
-        getHours(day);
-        weatherIcon();
-        daysOfWeek.push(day);
-      })
+    if (locationReponse.ok) {
+      userLocationCoord = `${locationJSON.results[0].locations[0].latLng.lat}, ${locationJSON.results[0].locations[0].latLng.lng}`;
+      harborSpringsCall = `https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/6391cb4b579b96ba00ae2f374f79d60b/${userLocationCoord}`;
 
-      return daysOfWeek;
+      response = await fetch(harborSpringsCall);
+      json = await response.json();
+      if (response.ok) {
+        console.log(json);
+        json.daily.data.forEach(info => {
+          day = {
+            date: info.time,
+            icon: info.icon,
+            summary: info.summary,
+            temperatureHighTime: info.temperatureHighTime,
+            temperatureHigh: `${info.temperatureHigh}F`,
+            temperatureLowTime: info.temperatureLowTime,
+            temperatureLow: `${info.temperatureLow}F`,
+            precipProbability: info.precipProbability,
+            precipType: info.precipType,
+            precipAccumulation: info.precipAccumulation,
+            precipIntensityMaxTime: info.precipIntensityMaxTime,
+            sunriseTime: info.sunriseTime,
+            sunsetTime: info.sunsetTime
+          };
+          let date = new Date(day.date * 1000);
+          let month = date.getMonth();
+          day.date = `${
+            months[month]
+          }, ${date.getDate()}, ${date.getFullYear()}`;
+          getHours(day);
+          weatherIcon();
+          daysOfWeek.push(day);
+        });
+
+        return daysOfWeek;
+      } else {
+        throw new Error(json);
+      }
     } else {
-      throw new Error(json);
-    }
-    }else {
       throw new Error(locationJSON);
     }
-
-
-  };
+  }
 
   let userLocationFormHandler = () => {
     // getUserLocationCoord(userLocation, userLocationCoord);
     promise = harborSpringsWeather();
-}
-
-
-
-
+  };
 </script>
 
 <style>
   .cardContainer {
     display: grid;
-    grid-template-columns: repeat( auto-fill, minmax(min(calc(180px + 12vmin), 100%), 1fr));
+    grid-template-columns: repeat(
+      auto-fill,
+      minmax(min(calc(180px + 12vmin), 100%), 1fr)
+    );
     list-style: none;
-    grid-gap: .25em;
+    grid-gap: 0.25em;
   }
   .weatherCard {
-      border: solid 1px lightgray;
-      border-radius: 5px;
+    border: solid 1px lightgray;
+    border-radius: 5px;
   }
   .dateTitle {
-      text-align: center;
-      font-size: 1.25em;
-      padding: .25em;
-      border-bottom: solid 1px lightgray;
+    text-align: center;
+    font-size: 1.25em;
+    padding: 0.25em;
+    border-bottom: solid 1px lightgray;
   }
   .cardMainInfo {
-      padding: 1em;
+    padding: 1em;
   }
   strong {
-      font-weight: 600;
+    font-weight: 600;
   }
 </style>
-<form class="userLocationForm" on:submit|preventDefault={userLocationFormHandler}>
+
+<form
+  class="userLocationForm"
+  on:submit|preventDefault={userLocationFormHandler}>
   <input type="text" name="userLocation" bind:value={userLocation} />
   <button type="submit">Get {userLocation} Weather</button>
 </form>
@@ -204,15 +224,39 @@
         <p class="dateTitle">{day.date}</p>
         <div class="cardMainInfo">
           <img src={day.icon} alt="" />
-          <p><strong>Daily Summary:</strong> {day.summary}</p>
-          <p><strong>Temp High:</strong> {day.temperatureHigh}</p>
-          <p><strong>Temp High Time:</strong> {day.temperatureHighTime}</p>
-          <p><strong>Temp Low: </strong> {day.temperatureLow}</p>
-          <p><strong>Temp Low Time: </strong> {day.temperatureLowTime}</p>
+          <p>
+            <strong>Daily Summary:</strong>
+            {day.summary}
+          </p>
+          <p>
+            <strong>Sunrise:</strong>
+            {day.sunriseTime}
+          </p>
+          <p>
+            <strong>Sunset:</strong>
+            {day.sunsetTime}
+          </p>
+          <p>
+            <strong>Temp High:</strong>
+            {day.temperatureHigh}
+          </p>
+          <p>
+            <strong>Temp High Time:</strong>
+            {day.temperatureHighTime}
+          </p>
+          <p>
+            <strong>Temp Low:</strong>
+            {day.temperatureLow}
+          </p>
+          <p>
+            <strong>Temp Low Time:</strong>
+            {day.temperatureLowTime}
+          </p>
+
         </div>
       </li>
     {/each}
   </ul>
 {:catch error}
-<p>Ready For Your Search!</p>
+  <p>Ready For Your Search!</p>
 {/await}

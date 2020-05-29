@@ -17,5 +17,17 @@
   },
   "dependencies": {
     "sirv-cli": "^0.4.4"
-  }
+  },
+  "description": "*Looking for a shareable component template? Go here --> [sveltejs/component-template](https://github.com/sveltejs/component-template)*",
+  "main": "rollup.config.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bcowley1220/weatherDashboard.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bcowley1220/weatherDashboard/issues"
+  },
+  "homepage": "https://github.com/bcowley1220/weatherDashboard#readme"
 }
