@@ -40,10 +40,10 @@
   ];
 
   let getHours = day => {
-    let temperatureLowTime = new Date(day.temperatureLowTime * 1000);
-    let temperatureHighTime = new Date(day.temperatureHighTime * 1000);
-    let sunriseTime = new Date(day.sunriseTime * 1000);
-    let sunsetTime = new Date(day.sunsetTime * 1000);
+    let temperatureLowTime = new Date(day.temperatureLowTime);
+    let temperatureHighTime = new Date(day.temperatureHighTime);
+    let sunriseTime = new Date(day.sunriseTime);
+    let sunsetTime = new Date(day.sunsetTime);
     let lowHrs = temperatureLowTime.getHours();
     let lowMin = temperatureLowTime.getMinutes();
     if (lowMin == 0) {
@@ -73,7 +73,7 @@
     }
     let sunriseMin = sunriseTime.getMinutes();
     if (sunriseMin == 0) {
-      sunriseMin += "0";
+      sunriseMin += "0"
     } else if (sunriseMin.toString().length == 1) {
       sunriseMin = "0" + sunriseMin;
     }
@@ -185,7 +185,7 @@
     display: grid;
     grid-template-columns: repeat(
       auto-fill,
-      minmax(min(calc(180px + 12vmin), 100%), 1fr)
+      minmax(min(calc(250px + 12vmin), 100%), 1fr)
     );
     list-style: none;
     grid-gap: 0.25em;
@@ -193,6 +193,7 @@
   .weatherCard {
     border: solid 1px lightgray;
     border-radius: 5px;
+    background: white;
   }
   .dateTitle {
     text-align: center;
@@ -208,12 +209,19 @@
   }
 </style>
 
-<form
-  class="userLocationForm"
-  on:submit|preventDefault={userLocationFormHandler}>
-  <input type="text" name="userLocation" bind:value={userLocation} />
-  <button type="submit">Get {userLocation} Weather</button>
-</form>
+<div class="formWrapper">
+  <div class="searchCont">
+    <h1>
+      Stay up to date with all things weather today and for the coming week.
+    </h1>
+    <form
+      class="userLocationForm"
+      on:submit|preventDefault={userLocationFormHandler}>
+      <input type="text" name="userLocation" bind:value={userLocation} />
+      <button type="submit">Get {userLocation} Weather Current</button>
+    </form>
+  </div>
+</div>
 
 {#await promise}
   <p>Fetching your weather report!</p>
@@ -223,12 +231,12 @@
       <li class="weatherCard">
         <p class="dateTitle">{day.date}</p>
         <div class="cardMainInfo">
-          <img src={day.icon} alt="" />
+          <img src={day.icon} alt="projectedWeaterImage" />
           <p>
             <strong>Daily Summary:</strong>
             {day.summary}
           </p>
-          <p>
+          <p
             <strong>Sunrise:</strong>
             {day.sunriseTime}
           </p>
@@ -252,11 +260,10 @@
             <strong>Temp Low Time:</strong>
             {day.temperatureLowTime}
           </p>
-
         </div>
       </li>
     {/each}
   </ul>
 {:catch error}
-  <p>Ready For Your Search!</p>
+  <h2>Ready For Your Search!</h2>
 {/await}
