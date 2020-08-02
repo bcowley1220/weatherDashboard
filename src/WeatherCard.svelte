@@ -1,5 +1,7 @@
 <script>
-  let promise = harborSpringsWeather();
+  import { darkSkyKey, mapQuestKey } from "./ApiKey.svelte";
+  // let dsAPI = darkSkyKey;
+  let promise = getWeatherReport();
   let response;
   let json = {};
   let daysOfWeek = [];
@@ -22,8 +24,8 @@
     sunriseTime: "",
     sunsetTime: ""
   };
-  let harborSpringsCall = `https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/6391cb4b579b96ba00ae2f374f79d60b/${userLocationCoord}`;
-  let mapApiCall = `http://open.mapquestapi.com/geocoding/v1/address?key=QZSnSKeOgvAMPbWsHYlh7qVAnEeMGJBB&location=${userLocation}`;
+  let weatherLocationCall = `https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/${darkSkyKey}/${userLocationCoord}`;
+  let mapApiCall = `http://open.mapquestapi.com/geocoding/v1/address?key=${mapQuestKey}&location=${userLocation}`;
   let months = [
     "January",
     "February",
@@ -125,7 +127,7 @@
     }
   };
 
-  async function harborSpringsWeather() {
+  async function getWeatherReport() {
     daysOfWeek = [];
     console.log(userLocation);
     mapApiCall = `http://open.mapquestapi.com/geocoding/v1/address?key=QZSnSKeOgvAMPbWsHYlh7qVAnEeMGJBB&location=${userLocation}`;
@@ -133,9 +135,9 @@
     let locationJSON = await locationReponse.json();
     if (locationReponse.ok) {
       userLocationCoord = `${locationJSON.results[0].locations[0].latLng.lat}, ${locationJSON.results[0].locations[0].latLng.lng}`;
-      harborSpringsCall = `https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/6391cb4b579b96ba00ae2f374f79d60b/${userLocationCoord}`;
+      weatherLocationCall = `https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/6391cb4b579b96ba00ae2f374f79d60b/${userLocationCoord}`;
 
-      response = await fetch(harborSpringsCall);
+      response = await fetch(weatherLocationCall);
       json = await response.json();
       if (response.ok) {
         console.log(json);
@@ -176,7 +178,7 @@
 
   let userLocationFormHandler = () => {
     // getUserLocationCoord(userLocation, userLocationCoord);
-    promise = harborSpringsWeather();
+    promise = getWeatherReport();
   };
 </script>
 
