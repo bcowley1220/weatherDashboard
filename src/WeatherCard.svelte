@@ -217,10 +217,7 @@
 
 <div class="formWrapper">
   <div class="searchCont">
-    <h1>
-      Search for your desired location a briefing on the weather for today and
-      the next week.
-    </h1>
+    <h1>Enter your location to see the weather for the coming week.</h1>
     <form
       class="userLocationForm"
       on:submit|preventDefault={userLocationFormHandler}>
