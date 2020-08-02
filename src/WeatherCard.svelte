@@ -73,7 +73,7 @@
     }
     let sunriseMin = sunriseTime.getMinutes();
     if (sunriseMin == 0) {
-      sunriseMin += "0"
+      sunriseMin += "0";
     } else if (sunriseMin.toString().length == 1) {
       sunriseMin = "0" + sunriseMin;
     }
@@ -99,19 +99,19 @@
   let weatherIcon = () => {
     switch (day.icon) {
       case "sunny":
-        day.icon = `assets/sun.svg`;
+        day.icon = `assets/weatherIcons/3127120-weather/svg/011-sun.svg`;
         break;
       case "clear-day":
-        day.icon = `assets/sun.svg`;
+        day.icon = `assets/weatherIcons/3127120-weather/svg/011-sun.svg`;
         break;
       case "rain":
-        day.icon = `assets/rain.svg`;
+        day.icon = `assets/weatherIcons/3127120-weather/svg/006-rainy.svg`;
         break;
       case "partly-cloudy-day":
-        day.icon = `assets/cloudy.svg`;
+        day.icon = `assets/weatherIcons/3127120-weather/svg/004-cloud.svg`;
         break;
       case "cloudy":
-        day.icon = `assets/cloudy.svg`;
+        day.icon = `assets/weatherIcons/3127120-weather/svg/016-cloudy.svg`;
         break;
     }
   };
@@ -194,6 +194,7 @@
     border: solid 1px lightgray;
     border-radius: 5px;
     background: white;
+    margin-bottom: 1em;
   }
   .dateTitle {
     text-align: center;
@@ -207,12 +208,16 @@
   strong {
     font-weight: 600;
   }
+  .cardMainInfo_icon {
+    width: 100%;
+  }
 </style>
 
 <div class="formWrapper">
   <div class="searchCont">
     <h1>
-      Stay up to date with all things weather today and for the coming week.
+      Search for your desired location a briefing on the weather for today and
+      the next week.
     </h1>
     <form
       class="userLocationForm"
@@ -231,12 +236,15 @@
       <li class="weatherCard">
         <p class="dateTitle">{day.date}</p>
         <div class="cardMainInfo">
-          <img src={day.icon} alt="projectedWeaterImage" />
+          <img
+            src={day.icon}
+            alt="projectedWeatherImage"
+            class="cardMainInfo_icon" />
           <p>
             <strong>Daily Summary:</strong>
             {day.summary}
           </p>
-          <p
+          <p>
             <strong>Sunrise:</strong>
             {day.sunriseTime}
           </p>

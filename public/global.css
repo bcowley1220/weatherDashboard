@@ -87,4 +87,10 @@ button:focus {
   flex-flow: column nowrap;
   justify-content: center;
   align-items: center;
+  background: white;
+  border: solid 1px lightgrey;
+  border-radius: 5px;
+}
+.searchCont > h1 {
+  font-size: 1.65em;
 }
